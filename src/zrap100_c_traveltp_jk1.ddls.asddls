@@ -11,6 +11,8 @@ define root view entity ZRAP100_C_TRAVELTP_JK1
 {
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.90
+//      @Consumption.valueHelpDefinition: [{ entity : {name: '/DMO/I_Agency_StdVH', element: 'AgencyID' }, useForValidation: true }]
+//      @Consumption.valueHelpDefinition: [{ entity : {name: 'ZRAP100_R_TRAVELTP_JK1', element: 'TravelID' }, useForValidation: true }]
   key TravelID,
       @Search.defaultSearchElement: true
       @ObjectModel.text.element: ['AgencyName']
