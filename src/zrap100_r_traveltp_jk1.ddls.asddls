@@ -20,7 +20,12 @@ define root view entity ZRAP100_R_TRAVELTP_JK1
       currency_code         as CurrencyCode,
       description           as Description,
       overall_status        as OverallStatus,
+      @Semantics.largeObject: { mimeType: 'MimeType',   //case-sensitive
+                          fileName: 'FileName',   //case-sensitive
+                          acceptableMimeTypes: ['image/png', 'image/jpeg'],
+                          contentDispositionPreference: #ATTACHMENT }
       attachment            as Attachment,
+      @Semantics.mimeType: true
       mime_type             as MimeType,
       file_name             as FileName,
       @Semantics.user.createdBy: true
