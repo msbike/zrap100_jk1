@@ -1,5 +1,13 @@
 CLASS lhc_travel DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
+
+    CONSTANTS:
+      BEGIN OF travel_status,
+        open     TYPE c LENGTH 1 VALUE 'O', "Open
+        accepted TYPE c LENGTH 1 VALUE 'A', "Accepted
+        rejected TYPE c LENGTH 1 VALUE 'X', "Rejected
+      END OF travel_status.
+
     METHODS:
       get_global_authorizations FOR GLOBAL AUTHORIZATION
         IMPORTING
@@ -8,7 +16,7 @@ CLASS lhc_travel DEFINITION INHERITING FROM cl_abap_behavior_handler.
       earlynumbering_create FOR NUMBERING
         IMPORTING entities FOR CREATE Travel,
       setStatusToOpen FOR DETERMINE ON MODIFY
-            IMPORTING keys FOR Travel~setStatusToOpen.
+        IMPORTING keys FOR Travel~setStatusToOpen.
 ENDCLASS.
 
 CLASS lhc_travel IMPLEMENTATION.
@@ -94,7 +102,28 @@ CLASS lhc_travel IMPLEMENTATION.
 
   METHOD setStatusToOpen.
 
+    "Read travel instances of the transfered keys
+    READ ENTITIES OF zrap100_r_traveltp_jk1 IN LOCAL MODE
+        ENTITY Travel
+            FIELDS (  OverallStatus )
+            WITH CORRESPONDING #( keys )
+         RESULT DATA(travels)
+         FAILED DATA(read_failed).
 
+    DELETE travels WHERE OverallStatus IS NOT INITIAL.
+
+    IF travels IS NOT INITIAL.
+
+      MODIFY ENTITIES OF zrap100_r_traveltp_jk1 IN LOCAL MODE
+          ENTITY travel
+              UPDATE FIELDS ( OverallStatus )
+              WITH VALUE #( FOR travel IN travels ( %tky              = travel-%tky
+                                                    OverallStatus     = travel_status-open ) )
+      REPORTED DATA(update_reported).
+
+      reported = CORRESPONDING #( DEEP update_reported ).
+
+    ENDIF.
 
   ENDMETHOD.
 
