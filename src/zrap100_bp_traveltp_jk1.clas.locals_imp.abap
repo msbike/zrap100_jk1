@@ -16,6 +16,7 @@ CLASS lhc_travel IMPLEMENTATION.
 
     DATA use_number_range TYPE abap_bool VALUE abap_true.
     DATA travel_id_max    TYPE /dmo/travel_id.
+    DATA textid LIKE if_t100_message=>t100key.
 
     LOOP AT entities ASSIGNING FIELD-SYMBOL(<entity>) WHERE TravelID IS NOT INITIAL.
       APPEND CORRESPONDING #( <entity> ) TO mapped-travel.
@@ -55,7 +56,7 @@ CLASS lhc_travel IMPLEMENTATION.
             APPEND VALUE #(
                 %cid        = <entity>-%cid
                 %key        = <entity>-%key
-                %is_draft   = <entity>-%is_draft ) TO reported-travel.
+                %is_draft   = <entity>-%is_draft ) TO failed-travel.
 
           ENDLOOP.
 
