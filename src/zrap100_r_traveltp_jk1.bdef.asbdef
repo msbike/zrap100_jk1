@@ -34,9 +34,6 @@ authorization master( global )
   draft action Resume;
   draft determine action Prepare;
 
-  action ( features : instance ) acceptTravel result [1] $self;
-  action ( features : instance ) rejectTravel result [1] $self;
-
   mapping for ZRAP100_ATRAVJK1
   {
     TravelID = travel_id;

@@ -50,6 +50,25 @@
      <BIND_TYPE_VERSION>V4</BIND_TYPE_VERSION>
      <SERVICES>
       <item>
+       <SERVICE_NAME>Travel</SERVICE_NAME>
+       <SERVICE_CONTENT>
+        <item>
+         <SERVICE_VERSION>0001</SERVICE_VERSION>
+         <RELEASE_STATE>NOT_RELEASED</RELEASE_STATE>
+         <SRVD_REF>
+          <URI>/sap/bc/adt/ddic/srvd/sources/zrap100_ui_travel_jk1</URI>
+          <TYPE>SRVD/SRV</TYPE>
+          <NAME>ZRAP100_UI_TRAVEL_JK1</NAME>
+         </SRVD_REF>
+         <BIND_TYPE_DATA>
+          <CONTENT>
+           <ENCODING>base64</ENCODING>
+          </CONTENT>
+         </BIND_TYPE_DATA>
+        </item>
+       </SERVICE_CONTENT>
+      </item>
+      <item>
        <SERVICE_NAME>ZRAP100_UI_TRAVEL_JK1</SERVICE_NAME>
        <SERVICE_CONTENT>
         <item>
