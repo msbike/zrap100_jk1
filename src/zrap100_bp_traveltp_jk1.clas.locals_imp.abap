@@ -133,6 +133,62 @@ CLASS lhc_travel IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD validateCustomer.
+
+    READ ENTITIES OF zrap100_r_traveltp_jk1 IN LOCAL MODE
+        ENTITY Travel
+        FIELDS ( CustomerID )
+        WITH CORRESPONDING #( keys )
+        RESULT DATA(travels).
+
+    DATA customers TYPE SORTED TABLE OF /dmo/customer WITH UNIQUE KEY customer_id.
+
+    "optimization of DB select: extract distinct non-initial customer IDs
+    customers = CORRESPONDING #( travels DISCARDING DUPLICATES MAPPING customer_id = customerID EXCEPT * ).
+    DELETE customers WHERE customer_id IS INITIAL.
+    IF customers IS NOT INITIAL.
+
+      "check if customer ID exists
+      SELECT FROM /dmo/customer FIELDS customer_id
+                                FOR ALL ENTRIES IN @customers
+                                WHERE customer_id = @customers-customer_id
+        INTO TABLE @DATA(valid_customers).
+
+    ENDIF.
+
+    "raise msg for non existing and initial customer id
+    LOOP AT travels INTO DATA(travel).
+
+      APPEND VALUE #(  %tky                 = travel-%tky
+                       %state_area          = 'VALIDATE_CUSTOMER'
+                     ) TO reported-travel.
+
+      IF travel-CustomerID IS  INITIAL.
+        APPEND VALUE #( %tky = travel-%tky ) TO failed-travel.
+
+        APPEND VALUE #( %tky                = travel-%tky
+                        %state_area         = 'VALIDATE_CUSTOMER'
+                        %msg                = NEW /dmo/cm_flight_messages(
+                                                                textid   = /dmo/cm_flight_messages=>enter_customer_id
+                                                                severity = if_abap_behv_message=>severity-error )
+                        %element-CustomerID = if_abap_behv=>mk-on
+                      ) TO reported-travel.
+
+      ELSEIF travel-CustomerID IS NOT INITIAL AND NOT line_exists( valid_customers[ customer_id = travel-CustomerID ] ).
+        APPEND VALUE #(  %tky = travel-%tky ) TO failed-travel.
+
+        APPEND VALUE #(  %tky                = travel-%tky
+                         %state_area         = 'VALIDATE_CUSTOMER'
+                         %msg                = NEW /dmo/cm_flight_messages(
+                                                                customer_id = travel-customerid
+                                                                textid      = /dmo/cm_flight_messages=>customer_unkown
+                                                                severity    = if_abap_behv_message=>severity-error )
+                         %element-CustomerID = if_abap_behv=>mk-on
+                      ) TO reported-travel.
+      ENDIF.
+
+    ENDLOOP.
+
+
   ENDMETHOD.
 
   METHOD validateDates.
