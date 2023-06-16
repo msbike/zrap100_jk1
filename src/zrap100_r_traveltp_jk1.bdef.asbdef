@@ -32,6 +32,8 @@ early numbering
   update;
   delete;
 
+  action deductDiscount result [1] $self;
+
   determination setStatusToOpen on modify { create; }
 
   validation validateCustomer on save { create; field CustomerID; }

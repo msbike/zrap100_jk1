@@ -12,7 +12,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>ZJK1_MSG</ARBGB>
      <MSGNR>001</MSGNR>
-     <TEXT>Ups, hier ist ein Fehler aufgetreten</TEXT>
+     <TEXT>Hello World</TEXT>
     </T100>
    </T100>
   </asx:values>

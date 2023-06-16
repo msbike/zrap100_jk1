@@ -15,7 +15,7 @@ annotate view ZRAP100_C_TRAVELTP_JK1 with
     label: 'Travel',
     position: 10
   } ]
-
+  
   @UI: {
     lineItem:       [ { position: 10 ,  importance: #HIGH } ] ,
     identification: [ { position: 10 } ],
@@ -103,15 +103,12 @@ annotate view ZRAP100_C_TRAVELTP_JK1 with
   } ]
   Description;
 
-  @UI.lineItem: [ {
-    position: 100 ,
-    importance: #MEDIUM,
-    label: ''
-  } ]
-  @UI.identification: [ {
-    position: 100 ,
-    label: ''
-  } ]
+  @UI: { 
+    lineItem: [{ position: 100, importance: #HIGH }],
+    identification: [{ position: 100 }
+                    ,{ type: #FOR_ACTION, dataAction: 'deductDiscount', label: 'Deduct Discount' }],
+    textArrangement: #TEXT_ONLY                    
+  }
   OverallStatus;
 
   @UI.lineItem: [ {
@@ -149,4 +146,5 @@ annotate view ZRAP100_C_TRAVELTP_JK1 with
 
   @UI.hidden: true
   LastChangedAt;
+  
 }

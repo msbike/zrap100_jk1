@@ -22,6 +22,8 @@ CLASS lhc_travel DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS validateDates FOR VALIDATE ON SAVE
       IMPORTING keys FOR Travel~validateDates.
+    METHODS deductDiscount FOR MODIFY
+      IMPORTING keys FOR ACTION Travel~deductDiscount RESULT result.
 ENDCLASS.
 
 CLASS lhc_travel IMPLEMENTATION.
@@ -255,4 +257,13 @@ CLASS lhc_travel IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
+
+  METHOD deductDiscount.
+
+    APPEND NEW zrap100_cm_jk1(
+        textid     = zrap100_cm_jk1=>hello_world
+        severity   = if_abap_behv_message=>severity-success ) TO reported-%other.
+
+  ENDMETHOD.
+
 ENDCLASS.
