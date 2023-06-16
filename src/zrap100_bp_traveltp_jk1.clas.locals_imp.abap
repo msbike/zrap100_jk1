@@ -260,9 +260,43 @@ CLASS lhc_travel IMPLEMENTATION.
 
   METHOD deductDiscount.
 
-    APPEND NEW zrap100_cm_jk1(
-        textid     = zrap100_cm_jk1=>hello_world
-        severity   = if_abap_behv_message=>severity-success ) TO reported-%other.
+    DATA travels_for_update TYPE TABLE FOR UPDATE ZRAP100_R_TravelTP_JK1.
+    DATA(keys_with_valid_discount) = keys.
+
+    " read relevant travel instance data (only booking fee)
+    READ ENTITIES OF ZRAP100_R_TravelTP_JK1 IN LOCAL MODE
+       ENTITY Travel
+       FIELDS ( BookingFee )
+       WITH CORRESPONDING #( keys_with_valid_discount )
+       RESULT DATA(travels).
+
+    LOOP AT travels ASSIGNING FIELD-SYMBOL(<travel>).
+*      DATA percentage TYPE decfloat16.
+*      DATA(discount_percent) = keys_with_valid_discount[ KEY draft %tky = <travel>-%tky ]-%param-discount_percent.
+*      percentage =  discount_percent / 100 .
+      DATA(reduced_fee) = <travel>-BookingFee * ( 1 - 3 / 10 ) .
+
+      APPEND VALUE #( %tky       = <travel>-%tky
+                      BookingFee = reduced_fee
+                    ) TO travels_for_update.
+    ENDLOOP.
+
+    " update data with reduced fee
+    MODIFY ENTITIES OF ZRAP100_R_TravelTP_JK1 IN LOCAL MODE
+       ENTITY Travel
+       UPDATE FIELDS ( BookingFee )
+       WITH travels_for_update.
+
+    " read changed data for action result
+    READ ENTITIES OF ZRAP100_R_TravelTP_JK1 IN LOCAL MODE
+       ENTITY Travel
+       ALL FIELDS WITH
+       CORRESPONDING #( travels )
+       RESULT DATA(travels_with_discount).
+
+    " set action result
+    result = VALUE #( FOR travel IN travels_with_discount ( %tky   = travel-%tky
+                                                            %param = travel ) ).
 
   ENDMETHOD.
 

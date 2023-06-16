@@ -104,7 +104,8 @@ annotate view ZRAP100_C_TRAVELTP_JK1 with
   Description;
 
   @UI: { 
-    lineItem: [{ position: 100, importance: #HIGH }],
+    lineItem: [{ position: 100, importance: #HIGH }
+              ,{ type: #FOR_ACTION, dataAction: 'deductDiscount', label: 'Deduct Discount' }],
     identification: [{ position: 100 }
                     ,{ type: #FOR_ACTION, dataAction: 'deductDiscount', label: 'Deduct Discount' }],
     textArrangement: #TEXT_ONLY                    
