@@ -16,7 +16,12 @@ CLASS lhc_travel DEFINITION INHERITING FROM cl_abap_behavior_handler.
       earlynumbering_create FOR NUMBERING
         IMPORTING entities FOR CREATE Travel,
       setStatusToOpen FOR DETERMINE ON MODIFY
-        IMPORTING keys FOR Travel~setStatusToOpen.
+        IMPORTING keys FOR Travel~setStatusToOpen,
+      validateCustomer FOR VALIDATE ON SAVE
+        IMPORTING keys FOR Travel~validateCustomer.
+
+    METHODS validateDates FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Travel~validateDates.
 ENDCLASS.
 
 CLASS lhc_travel IMPLEMENTATION.
@@ -125,6 +130,12 @@ CLASS lhc_travel IMPLEMENTATION.
 
     ENDIF.
 
+  ENDMETHOD.
+
+  METHOD validateCustomer.
+  ENDMETHOD.
+
+  METHOD validateDates.
   ENDMETHOD.
 
 ENDCLASS.
