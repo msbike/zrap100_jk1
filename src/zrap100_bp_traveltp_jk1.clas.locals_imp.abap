@@ -263,6 +263,28 @@ CLASS lhc_travel IMPLEMENTATION.
     DATA travels_for_update TYPE TABLE FOR UPDATE ZRAP100_R_TravelTP_JK1.
     DATA(keys_with_valid_discount) = keys.
 
+    " check and handle invalid discount values
+    LOOP AT keys_with_valid_discount ASSIGNING FIELD-SYMBOL(<key_with_valid_discount>)
+      WHERE %param-discount_percent IS INITIAL OR %param-discount_percent > 100 OR %param-discount_percent <= 0.
+
+      " report invalid discount value appropriately
+      APPEND VALUE #( %tky                       = <key_with_valid_discount>-%tky ) TO failed-travel.
+
+      APPEND VALUE #( %tky                       = <key_with_valid_discount>-%tky
+                      %msg                       = NEW /dmo/cm_flight_messages(
+                                                       textid = /dmo/cm_flight_messages=>discount_invalid
+                                                       severity = if_abap_behv_message=>severity-error )
+                      %element-TotalPrice        = if_abap_behv=>mk-on
+                      %op-%action-deductDiscount = if_abap_behv=>mk-on
+                    ) TO reported-travel.
+
+      " remove invalid discount value
+      DELETE keys_with_valid_discount.
+    ENDLOOP.
+
+    " check and go ahead with valid discount values
+    CHECK keys_with_valid_discount IS NOT INITIAL.
+
     " read relevant travel instance data (only booking fee)
     READ ENTITIES OF ZRAP100_R_TravelTP_JK1 IN LOCAL MODE
        ENTITY Travel
@@ -271,14 +293,17 @@ CLASS lhc_travel IMPLEMENTATION.
        RESULT DATA(travels).
 
     LOOP AT travels ASSIGNING FIELD-SYMBOL(<travel>).
-*      DATA percentage TYPE decfloat16.
-*      DATA(discount_percent) = keys_with_valid_discount[ KEY draft %tky = <travel>-%tky ]-%param-discount_percent.
-*      percentage =  discount_percent / 100 .
-      DATA(reduced_fee) = <travel>-BookingFee * ( 1 - 3 / 10 ) .
+      DATA percentage TYPE decfloat16.
+      DATA(discount_percent) = keys_with_valid_discount[ KEY draft %tky = <travel>-%tky ]-%param-discount_percent.
 
-      APPEND VALUE #( %tky       = <travel>-%tky
-                      BookingFee = reduced_fee
-                    ) TO travels_for_update.
+      IF sy-subrc = 0.
+        percentage =  discount_percent / 100 .
+        DATA(reduced_fee) = <travel>-BookingFee * ( 1 - percentage ) .
+
+        APPEND VALUE #( %tky       = <travel>-%tky
+                        BookingFee = reduced_fee
+                      ) TO travels_for_update.
+      ENDIF.
     ENDLOOP.
 
     " update data with reduced fee

@@ -32,7 +32,7 @@ early numbering
   update;
   delete;
 
-  action deductDiscount result [1] $self;
+  action deductDiscount parameter /dmo/a_travel_discount result [1] $self;
 
   determination setStatusToOpen on modify { create; }
 
