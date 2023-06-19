@@ -3,7 +3,7 @@
 define root view entity ZRAP100_R_TRAVELTP_JK1
   as select from zrap100_atravjk1 as Travel
 
-  association [0..1] to /DMO/I_Agency            as _Agency        on $projection.AgencyID = _Agency.AgencyID
+  association [0..1] to zc_rap_agency_JK01            as _Agency        on $projection.AgencyID = _Agency.AgencyId
   association [0..1] to /DMO/I_Customer          as _Customer      on $projection.CustomerID = _Customer.CustomerID
   association [1..1] to /DMO/I_Overall_Status_VH as _OverallStatus on $projection.OverallStatus = _OverallStatus.OverallStatus
   association [0..1] to I_Currency               as _Currency      on $projection.CurrencyCode = _Currency.Currency

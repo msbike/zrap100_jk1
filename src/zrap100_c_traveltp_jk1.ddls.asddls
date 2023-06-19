@@ -15,10 +15,11 @@ define root view entity ZRAP100_C_TRAVELTP_JK1
 //      @Consumption.valueHelpDefinition: [{ entity : {name: 'ZRAP100_R_TRAVELTP_JK1', element: 'TravelID' }, useForValidation: true }]
   key TravelID,
       @Search.defaultSearchElement: true
-      @ObjectModel.text.element: ['AgencyName']
-      @Consumption.valueHelpDefinition: [{ entity : {name: '/DMO/I_Agency_StdVH', element: 'AgencyID' }, useForValidation: true }]
+//      @ObjectModel.text.element: ['AgencyName']
+//      @Consumption.valueHelpDefinition: [{ entity : {name: '/DMO/I_Agency_StdVH', element: 'AgencyID' }, useForValidation: true }]
+      @Consumption.valueHelpDefinition: [{ entity : {name: 'zc_rap_agency_JK01', element: 'AgencyId' }, useForValidation: true }]
       AgencyID,
-      _Agency.Name              as AgencyName,
+//      _Agency.Name              as AgencyName,
       @Search.defaultSearchElement: true
       @ObjectModel.text.element: ['CustomerName']
       @Consumption.valueHelpDefinition: [{ entity : {name: '/DMO/I_Customer_StdVH', element: 'CustomerID' }, useForValidation: false }]
